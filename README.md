@@ -1,7 +1,7 @@
 # diplomas_and_disadvantage
 Automation and Workflows Final Project
 
-Updated project proposal can be found in the *Project Proposal* PDF. 
+Updated write-up can be found in *Writeup.pdf*. 
 
 *create_map.py* contains two functions: *collectAndClean* and *createMap*. By running the file with *python create_map.py*, these functions will be run and save the resulting map. The functions can also be imported into a Python script and run separately. 
 
