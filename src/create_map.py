@@ -6,6 +6,8 @@ from urllib.request import urlopen
 import json
 pd.options.mode.chained_assignment = None
 
+from util import createTitle, subset_schools, county_settings
+
 def collectAndClean():
     '''
     Returns counties data (from Internet), cleans ranks data (from Excel file), and cleans schools data (from csv file).
@@ -17,7 +19,7 @@ def collectAndClean():
     counties1 = gpd.read_file("https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json")
 
     # read in deep disadvantage data and configure fips
-    ranks = pd.read_excel("raw_data/Index of Deep Disadvantage - Updated.xlsx", dtype={'fips': str})
+    ranks = pd.read_excel("../raw_data/Index of Deep Disadvantage - Updated.xlsx", dtype={'fips': str})
     ranks.dropna(subset="fips", inplace = True)                # remove cities
     ranks["fips"] = ranks["fips"].apply(lambda x: x.zfill(5))  # format fips so they can be matched with county geojson info
     ranks = ranks.sort_values(by = "rank1")
@@ -28,7 +30,7 @@ def collectAndClean():
     
 
     # read in school data
-    schools = pd.read_csv("raw_data/CSV_10312024-789.csv")
+    schools = pd.read_csv("../raw_data/CSV_10312024-789.csv")
 
     # will likely rename more columns as more measures are added
     schools.rename(columns={'institution name': 'name',
@@ -59,48 +61,6 @@ def collectAndClean():
     schools = schools.merge(ranks, how = "inner", on="fips")    #7 schools get booted off
     return(counties, ranks, schools)
 
-def createTitle(subset: str,
-                metric: str
-                ):
-    if subset == "All":
-        descript = "U.S. Colleges"
-    else:
-        descript = subset
-    
-    if metric == "Rank":
-        metric_phrase = "Deep Disadvantage-Ranked Counties"
-    elif metric == "Raw Disadvantage":
-        metric_phrase = "Counties with Index of Deep Disadvantage"
-    elif metric == "Percent Below Poverty Line":
-        metric_phrase = "County Percentages of Residents in Poverty"
-    elif metric == "Percent Below Deep Poverty Line":
-        metric_phrase = "County Percentages of Residents in Deep Poverty"
-    elif metric == "Life Expectancy":
-        metric_phrase = "County Life Expectancies"
-    elif metric == "Low Birth Weight Rate":
-        metric_phrase = "County Infant Low Birth Weight Rates"
-    elif metric == "Percent White":
-        metric_phrase = "County Percentages of Residents who Identify as White"
-    elif metric == "Percent Black":
-        metric_phrase = "County Percentages of Residents who Identify as Black"
-    elif metric == "Percent Native":
-        metric_phrase = "County Percentages of Residents who Identify as Native"
-    elif metric == "Percent Less Than High School Diploma":
-        metric_phrase = "County Percentages of Residents with Less Than High School Diploma"
-    elif metric == "Percent College Graduates":
-        metric_phrase = "County Percentages of Residents who are College Graduates"
-    elif metric == "Unemployment Rate":
-        metric_phrase = "County Umemployment Rates"
-    elif metric == "Gini Coefficient":
-        metric_phrase = "County Gini Coefficients"
-    elif metric == "Socioeconomic Mobility":
-        metric_phrase = "County Socioeconomic Mobilities"
-    elif metric == "Climate Disasters":
-        metric_phrase = "County Climate Disasters"
-    
-    return (descript + " on " + metric_phrase)
-
-
 def createMap(subset: str,
               metric: str, 
               county_tooltip: bool,
@@ -113,73 +73,9 @@ def createMap(subset: str,
     This function will also include more inputs once more metrics are implemented.
     '''
 
-    if subset == "HBCUs":
-        schools = schools[schools["HD2023.Historically Black College or University"] == "Yes"]
-    elif subset == "Tribal Colleges":
-        schools = schools[schools["HD2023.Tribal college"] == "Yes"]
-    elif subset == "Community Colleges":
-        schools = schools[schools["community_college"] == 1]
+    schools = subset_schools(subset, schools)
 
-    if metric == "Rank":
-        ranks["metric_of_interest"] = ranks["level_0"].copy()
-        schools["metric_of_interest"] = schools["level_0"].copy()
-        color = "deep_r"
-    elif metric == "Raw Disadvantage":
-        ranks["metric_of_interest"] = round(ranks["index"].copy(), 2)
-        schools["metric_of_interest"] = round(schools["index"].copy(), 2)
-        color = "deep_r"
-    elif metric == "Percent Below Poverty Line":
-        ranks["metric_of_interest"] = ranks["pct_belowpov"].copy()
-        schools["metric_of_interest"] = schools["pct_belowpov"].copy()
-        color = "deep"
-    elif metric == "Percent Below Deep Poverty Line":
-        ranks["metric_of_interest"] = ranks["pct_deeppov"].copy()
-        schools["metric_of_interest"] = schools["pct_deeppov"].copy()
-        color = "deep"
-    elif metric == "Life Expectancy":
-        ranks["metric_of_interest"] = ranks["life_exp"].copy()
-        schools["metric_of_interest"] = schools["life_exp"].copy()
-        color = "deep_r"
-    elif metric == "Low Birth Weight Rate":
-        ranks["metric_of_interest"] = ranks["lbw"].copy()
-        schools["metric_of_interest"] = schools["lbw"].copy()
-        color = "deep"
-    elif metric == "Percent White":
-        ranks["metric_of_interest"] = ranks["pct.white.nonhisp"].copy()
-        schools["metric_of_interest"] = schools["pct.white.nonhisp"].copy()
-        color = "ice_r"
-    elif metric == "Percent Black":
-        ranks["metric_of_interest"] = ranks["pct.black.nonhisp"].copy()
-        schools["metric_of_interest"] = schools["pct.black.nonhisp"].copy()
-        color = "ice_r"
-    elif metric == "Percent Native":
-        ranks["metric_of_interest"] = ranks["pct.native"].copy()
-        schools["metric_of_interest"] = schools["pct.native"].copy()
-        color = "ice_r"
-    elif metric == "Percent Less Than High School Diploma":
-        ranks["metric_of_interest"] = ranks["pct.less.than.HS"].copy()
-        schools["metric_of_interest"] = schools["pct.less.than.HS"].copy()
-        color = "deep"
-    elif metric == "Percent College Graduates":
-        ranks["metric_of_interest"] = ranks["pct.college.grad"].copy()
-        schools["metric_of_interest"] = schools["pct.college.grad"].copy()
-        color = "deep_r"
-    elif metric == "Unemployment Rate":
-        ranks["metric_of_interest"] = ranks["unemployment.rate"].copy()
-        schools["metric_of_interest"] = schools["unemployment.rate"].copy()
-        color = "deep"
-    elif metric == "Gini Coefficient":
-        ranks["metric_of_interest"] = ranks["gini"].copy()
-        schools["metric_of_interest"] = schools["gini"].copy()
-        color = "deep"
-    elif metric == "Socioeconomic Mobility":
-        ranks["metric_of_interest"] = round(ranks["mobility"].copy(), 2)
-        schools["metric_of_interest"] = round(schools["mobility"].copy(), 2)
-        color = "deep_r"
-    elif metric == "Climate Disasters":
-        ranks["metric_of_interest"] = ranks["climate.disasters"].copy().astype(int)
-        schools["metric_of_interest"] = schools["climate.disasters"].copy().astype(int)
-        color = "deep"
+    ranks, schools, color = county_settings(metric, ranks, schools)
 
     ranks["textbox"] = ranks["name"] + "<br>" + metric + ": " + ranks["metric_of_interest"].astype(str)
     schools["textbox"] = schools["name_x"] + "<br>County: " + schools["name_y"] + "<br>County " + metric + ": " + schools["metric_of_interest"].astype(str)
