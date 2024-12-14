@@ -1,14 +1,14 @@
 import pandas as pd
 import geopandas as gpd
 
-def createTitle(subset: str,
+def create_title(subset: str,
                 metric: str
                 ) -> str:
-    '''
+    """
     Return the title of the figure based on the chosen metric and subset.
     Subset refers to the set of schools (i.e. "All", "Community Colleges").
     Metric refers to the county disadvantage measure (i.e. "Rank", "Life Expectancy").
-    '''
+    """
     if subset == "All":
         descript = "U.S. Colleges"
     else:
@@ -50,28 +50,30 @@ def createTitle(subset: str,
 def subset_schools(subset: str,
                    schools: gpd.geodataframe.GeoDataFrame
                    ) -> gpd.geodataframe.GeoDataFrame:
-    '''
+    """
     Returns the schools geopandas dataframe, subset based on the user's choice.
     Subset refers to the set of schools (i.e. "All", "Community Colleges").
     Schools refers to the original schools geopandas dataframe.
-    '''
+    """
     if subset == "HBCUs":
         return(schools[schools["HD2023.Historically Black College or University"] == "Yes"])
     elif subset == "Tribal Colleges":
         return(schools[schools["HD2023.Tribal college"] == "Yes"])
     elif subset == "Community Colleges":
         return(schools[schools["community_college"] == 1])
+    else:
+        return schools
 
 def county_settings(metric: str,
                     ranks: pd.core.frame.DataFrame, 
                     schools: gpd.geodataframe.GeoDataFrame
                     ) -> list:
-    '''
+    """
     Returns a list with the modified ranks dataframe, modified schools geopandas dataframe, and the colorscale.
     Metric refers to the county disadvantage measure (i.e. "Rank", "Life Expectancy").
     Ranks refers to the original ranks dataframe with counties and all of their disadvantage metrics.
     Schools refers to the original schools geopandas dataframe.
-    '''
+    """
     if metric == "Rank":
         ranks["metric_of_interest"] = ranks["level_0"].copy()
         schools["metric_of_interest"] = schools["level_0"].copy()
@@ -137,12 +139,12 @@ def county_settings(metric: str,
 
 def metric_inner_html(met_dd: str
                       ) -> str:
-    '''
+    """
     Returns the description text for the user-chosen metric.
     Met_dd is the metric chosen by the user in Dash.
-    '''
+    """
     if met_dd == "Rank":
-        return("This setting displays the ranking of the Index of Deep Disadvantage, with 1 being the most disadvantaged county and 3,141 being the least disadvantaged county.<br><br>This index is made of metrics in three categories: health, poverty, and social mobility. Health includes life expectancy and infant low birth weight rate. Poverty includes percent of residents in poverty and deep povery. Social mobility includes a social mobility score calculated by Chetty et al.<br><br>For more information about this metric, you can visit the project page linked at the bottom of this site.")
+        return("This setting displays the ranking of the Index of Deep Disadvantage, with 1 being the most disadvantaged county and 3,141 being the least disadvantaged county.<br><br>This index is made of metrics in three categories: health, poverty, and social mobility. Health includes life expectancy and infant low birth weight rate. Poverty includes percent of residents in poverty and deep povery. Social mobility includes a social mobility score calculated by Chetty and Hendren.<br><br>For more information about this metric, you can visit the project page linked at the bottom of this site.")
     elif met_dd == "Raw Disadvantage":
         return("This setting displays the Index of Deep Disadvantage, with positive numbers indicating less disadvantaged counties and negative numbers indicating more disadvantaged counties.<br><br>This index is made of metrics in three categories: health, poverty, and social mobility. Health includes life expectancy and infant low birth weight rate. Poverty includes percent of residents in poverty and deep povery. Social mobility includes a social mobility score calculated by Chetty et al.<br><br>For more information about this metric, you can visit the project page linked at the bottom of this site.")
     elif met_dd == "Percent Below Poverty Line":
@@ -174,10 +176,10 @@ def metric_inner_html(met_dd: str
     
 def subset_inner_html(subset_radio: str
                       ) -> str:
-    '''
+    """
     Returns the description text for the user-chosen school subset.
     Subset_radio is the subset chosen by the user in Dash.
-    '''
+    """
     if subset_radio == "HBCUs":
         return('Historically Black Colleges and Universities are defined by the Higher Education Act of 1965 as "...any historically black college or university that was established prior to 1964, whose principal mission was, and is, the education of black Americans..."<br><br>This designation is set by the Department of Education.')
     elif subset_radio == "Tribal Colleges":

@@ -6,12 +6,12 @@ from urllib.request import urlopen
 import json
 pd.options.mode.chained_assignment = None
 
-from util import createTitle, subset_schools, county_settings
+from src.util import create_title, subset_schools, county_settings
 
-def collectAndClean():
-    '''
+def collect_and_clean():
+    """
     Returns counties data (from Internet), cleans ranks data (from Excel file), and cleans schools data (from csv file).
-    '''
+    """
     
     # load county data for geojson to work
     with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
@@ -19,7 +19,7 @@ def collectAndClean():
     counties1 = gpd.read_file("https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json")
 
     # read in deep disadvantage data and configure fips
-    ranks = pd.read_excel("../raw_data/Index of Deep Disadvantage - Updated.xlsx", dtype={'fips': str})
+    ranks = pd.read_excel("raw_data/Index of Deep Disadvantage - Updated.xlsx", dtype={'fips': str})
     ranks.dropna(subset="fips", inplace = True)                # remove cities
     ranks["fips"] = ranks["fips"].apply(lambda x: x.zfill(5))  # format fips so they can be matched with county geojson info
     ranks = ranks.sort_values(by = "rank1")
@@ -30,7 +30,7 @@ def collectAndClean():
     
 
     # read in school data
-    schools = pd.read_csv("../raw_data/CSV_10312024-789.csv")
+    schools = pd.read_csv("raw_data/CSV_10312024-789.csv")
 
     # will likely rename more columns as more measures are added
     schools.rename(columns={'institution name': 'name',
@@ -38,7 +38,7 @@ def collectAndClean():
                             'HD2023.Latitude location of institution': 'lat'},
                    inplace=True)
     
-    schools["below_bachelors"] = schools["DRVC2023.Number of students receiving an Associate's degree"]+ schools["DRVC2023.Number of students receiving certificates of less than 12 weeks"] + schools["DRVC2023.Number of students receiving certificates of at least 12 weeks, but less than 1 year"] + schools["DRVC2023.Number of students receiving a certificate of 1 but less than 4 years"]
+    schools["below_bachelors"] = schools["DRVC2023.Number of students receiving an Associate's degree"] + schools["DRVC2023.Number of students receiving certificates of less than 12 weeks"] + schools["DRVC2023.Number of students receiving certificates of at least 12 weeks, but less than 1 year"] + schools["DRVC2023.Number of students receiving a certificate of 1 but less than 4 years"]
     schools["bachelors_above"] = schools["DRVC2023.Number of students receiving a Bachelor's degree"] + schools["DRVC2023.Number of students receiving a Master's degree"] + schools["DRVC2023.Number of students receiving a Doctor's degree"]
     schools["below_bachelors"] = schools["below_bachelors"].fillna(0)
     schools["bachelors_above"] = schools["bachelors_above"].fillna(0)
@@ -61,17 +61,17 @@ def collectAndClean():
     schools = schools.merge(ranks, how = "inner", on="fips")    #7 schools get booted off
     return(counties, ranks, schools)
 
-def createMap(subset: str,
+def create_map(subset: str,
               metric: str, 
               county_tooltip: bool,
               school_tooltip: bool,
               counties: dict,
               ranks: pd.core.frame.DataFrame,
               schools: gpd.geodataframe.GeoDataFrame):
-    '''
+    """
     Creates and saves basic plotly map based on county data, rank data, and school data.
     This function will also include more inputs once more metrics are implemented.
-    '''
+    """
 
     schools = subset_schools(subset, schools)
 
@@ -97,7 +97,7 @@ def createMap(subset: str,
                   'margin': {'r':0 ,'t': 30, 'l': 0, 'b': 0},
                   'dragmode': False,
                   'mapbox_style': 'open-street-map',
-                  'title': createTitle(subset, metric)
+                  'title': create_title(subset, metric)
                  }
 
     # create empty figure
@@ -136,7 +136,3 @@ def createMap(subset: str,
     #fig.write_html("figures/basic_map.html")
     
     return(fig)
-
-if __name__ == "__main__":
-    counties, ranks, schools = collectAndClean()
-    basic_fig = createMap("All", "Rank", True, True, counties, ranks, schools)
