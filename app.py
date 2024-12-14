@@ -6,7 +6,7 @@ from src.util import metric_inner_html, subset_inner_html
 # create app instance
 app = Dash(__name__)
 # add an app title
-app.title = 'Diplomas and Disadvantage Map'
+app.title = "Diplomas and Disadvantage Map"
 
 # run the collect_and_clean function in create_map.py
 counties, ranks, schools = collect_and_clean("raw_data/Index of Deep Disadvantage - Updated.xlsx", "raw_data/CSV_10312024-789.csv")
@@ -15,29 +15,29 @@ counties, ranks, schools = collect_and_clean("raw_data/Index of Deep Disadvantag
 def layout() -> list:
 
     # define a header for the top of the page
-    header = html.H1('Diplomas and Disadvantage: Mapping U.S. Colleges on County Disadvantage Metrics')
+    header = html.H1("Diplomas and Disadvantage: Mapping U.S. Colleges on County Disadvantage Metrics")
 
     # create the label for the metric dropdown
-    met_label = html.Label('Select a metric to map (scroll down on the list for more options):')
+    met_label = html.Label("Select a metric to map (scroll down on the list for more options):")
     
     # create the metric dropdown list, Rank is default
-    met_dd = dcc.Dropdown(id='met_dd', 
-                          options=['Rank',
-                                   'Raw Disadvantage',
-                                   'Percent Below Poverty Line',
-                                   'Percent Below Deep Poverty Line',
-                                   'Life Expectancy',
-                                   'Low Birth Weight Rate',
-                                   'Percent White', 
-                                   'Percent Black',
-                                   'Percent Native',
-                                   'Percent Less Than High School Diploma',
-                                   'Percent College Graduates', 
-                                   'Unemployment Rate',
-                                   'Gini Coefficient',
-                                   'Socioeconomic Mobility',
-                                   'Climate Disasters'],
-                          value='Rank'
+    met_dd = dcc.Dropdown(id="met_dd", 
+                          options=["Rank",
+                                   "Raw Disadvantage",
+                                   "Percent Below Poverty Line",
+                                   "Percent Below Deep Poverty Line",
+                                   "Life Expectancy",
+                                   "Low Birth Weight Rate",
+                                   "Percent White", 
+                                   "Percent Black",
+                                   "Percent Native",
+                                   "Percent Less Than High School Diploma",
+                                   "Percent College Graduates", 
+                                   "Unemployment Rate",
+                                   "Gini Coefficient",
+                                   "Socioeconomic Mobility",
+                                   "Climate Disasters"],
+                          value="Rank"
                           )
 
     # create the label for the subset selection
@@ -61,21 +61,21 @@ def layout() -> list:
     children = [header,                             # add the header (defined above)
                 met_label,                          # add the metric dropdown label (defined above)
                 met_dd,                             # add the metric dropdown (defined above)
-                html.Div(id='met_description'),     # add a description for the metric (controlled by callback below)
+                html.Div(id="met_description"),     # add a description for the metric (controlled by callback below)
                 subset_label,                       # add the subset radio buttons label (defined above)
                 subset_radio,                       # add the subset radio buttons (defined above)
-                html.Div(id='subset_description'),  # add a description for the subset (controlled by callback below)
-                dcc.Graph(id='graph'),              # add map (controlled by callback below)
+                html.Div(id="subset_description"),  # add a description for the subset (controlled by callback below)
+                dcc.Graph(id="graph"),              # add map (controlled by callback below)
                 tooltip_label,                      # add the tooltip check buttons label (defined above)
                 tooltip_checklist,                  # add the tooltip check buttons (defined above)
                 # add link to the University of Michigan site at the bottom
-                html.Div(html.A("Visit Index of Deep Disadvantage data source.", href='https://poverty.umich.edu/projects/understanding-communities-of-deep-disadvantage/', target="_blank"))
+                html.Div(html.A("Visit Index of Deep Disadvantage data source.", href="https://poverty.umich.edu/projects/understanding-communities-of-deep-disadvantage/", target="_blank"))
                 ]
     # return the layout
     return children
 
 # add the layout to the application
-app.layout = html.Div(id='main-div', children=layout())
+app.layout = html.Div(id="main-div", children=layout())
 
 # callback for creating the map
 @app.callback(
