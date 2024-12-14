@@ -85,7 +85,7 @@ app.layout = html.Div(id="main-div", children=layout())
     Input("tooltip_checklist", "value")
 )
 
-# function for displaying/refreshing the mpa
+# function for displaying/refreshing the map
 def display_map(subset_radio, met_dd, tooltip_checklist):
 
     # set county tooltip option based on tooltip check button

@@ -6,7 +6,12 @@ from urllib.request import urlopen
 import json
 pd.options.mode.chained_assignment = None
 
-from src.util import create_title, subset_schools, county_settings
+try:
+    # works if run by app.py
+    from src.util import create_title, subset_schools, county_settings
+except:
+    # works if run as standalone program
+    from util import create_title, subset_schools, county_settings
 
 # function used at the beginning of the app.py file
 def collect_and_clean(ranks_location: str,
@@ -91,7 +96,8 @@ def create_map(subset: str,
               school_tooltip: bool,
               counties: dict,
               ranks: pd.core.frame.DataFrame,
-              schools: gpd.geodataframe.GeoDataFrame):
+              schools: gpd.geodataframe.GeoDataFrame
+              ) -> go.Figure:
     """
     Creates and saves basic plotly map based on county data, rank data, and school data.
     This function will also include more inputs once more metrics are implemented.
@@ -164,3 +170,8 @@ def create_map(subset: str,
                        )
     
     return(fig)
+
+if __name__ == "__main__":
+    counties, ranks, schools = collect_and_clean("../raw_data/Index of Deep Disadvantage - Updated.xlsx", "../raw_data/CSV_10312024-789.csv")
+    fig = create_map("All", "Rank", True, True, counties, ranks, schools)
+    fig.write_html("../figures/basic_map.html")
