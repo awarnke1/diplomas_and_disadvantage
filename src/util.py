@@ -1,6 +1,7 @@
 import pandas as pd
 import geopandas as gpd
 
+# function used in create_map function in create_map.py
 def create_title(subset: str,
                 metric: str
                 ) -> str:
@@ -9,11 +10,13 @@ def create_title(subset: str,
     Subset refers to the set of schools (i.e. "All", "Community Colleges").
     Metric refers to the county disadvantage measure (i.e. "Rank", "Life Expectancy").
     """
+    # if no particular subset, use "U.S. Colleges"; otherwise, include the name of the subset in the title
     if subset == "All":
-        descript = "U.S. Colleges"
+        subset_phrase = "U.S. Colleges"
     else:
-        descript = subset
+        subset_phrase = subset
     
+    # get more formal name for metric to be included in the title
     if metric == "Rank":
         metric_phrase = "Deep Disadvantage-Ranked Counties"
     elif metric == "Raw Disadvantage":
@@ -45,8 +48,10 @@ def create_title(subset: str,
     elif metric == "Climate Disasters":
         metric_phrase = "County Climate Disasters"
     
-    return (descript + " on " + metric_phrase)
+    # return the combined title
+    return (subset_phrase + " on " + metric_phrase)
 
+# function used in create_map function in create_map.py
 def subset_schools(subset: str,
                    schools: gpd.geodataframe.GeoDataFrame
                    ) -> gpd.geodataframe.GeoDataFrame:
@@ -55,6 +60,8 @@ def subset_schools(subset: str,
     Subset refers to the set of schools (i.e. "All", "Community Colleges").
     Schools refers to the original schools geopandas dataframe.
     """
+
+    # filters based on the column corresponding to the chosen subset
     if subset == "HBCUs":
         return(schools[schools["HD2023.Historically Black College or University"] == "Yes"])
     elif subset == "Tribal Colleges":
@@ -62,8 +69,10 @@ def subset_schools(subset: str,
     elif subset == "Community Colleges":
         return(schools[schools["community_college"] == 1])
     else:
+        # if no particular subset, then original geopandas dataframe is returned
         return schools
 
+# function used in the create_map function in create_map.py
 def county_settings(metric: str,
                     ranks: pd.core.frame.DataFrame, 
                     schools: gpd.geodataframe.GeoDataFrame
@@ -74,10 +83,12 @@ def county_settings(metric: str,
     Ranks refers to the original ranks dataframe with counties and all of their disadvantage metrics.
     Schools refers to the original schools geopandas dataframe.
     """
+
+    # for each metric
     if metric == "Rank":
-        ranks["metric_of_interest"] = ranks["level_0"].copy()
-        schools["metric_of_interest"] = schools["level_0"].copy()
-        color = "deep_r"
+        ranks["metric_of_interest"] = ranks["level_0"].copy()           # copy the metric into the metric_of_interest column in ranks
+        schools["metric_of_interest"] = schools["level_0"].copy()       # copy the metric into the metric_of_interest column in schools
+        color = "deep_r"                                                # set the colorscale - deep_r means that a lower value indicates more disadvantage
     elif metric == "Raw Disadvantage":
         ranks["metric_of_interest"] = round(ranks["index"].copy(), 2)
         schools["metric_of_interest"] = round(schools["index"].copy(), 2)
@@ -89,7 +100,7 @@ def county_settings(metric: str,
     elif metric == "Percent Below Deep Poverty Line":
         ranks["metric_of_interest"] = ranks["pct_deeppov"].copy()
         schools["metric_of_interest"] = schools["pct_deeppov"].copy()
-        color = "deep"
+        color = "deep"                                                  # deep colorscale means that a higher value indicates more disadvantage
     elif metric == "Life Expectancy":
         ranks["metric_of_interest"] = ranks["life_exp"].copy()
         schools["metric_of_interest"] = schools["life_exp"].copy()
@@ -101,7 +112,7 @@ def county_settings(metric: str,
     elif metric == "Percent White":
         ranks["metric_of_interest"] = ranks["pct.white.nonhisp"].copy()
         schools["metric_of_interest"] = schools["pct.white.nonhisp"].copy()
-        color = "ice_r"
+        color = "ice_r"                      # ice_r colorscale means values don't correspond to disadvantage; higher number indicates higher racial concentration 
     elif metric == "Percent Black":
         ranks["metric_of_interest"] = ranks["pct.black.nonhisp"].copy()
         schools["metric_of_interest"] = schools["pct.black.nonhisp"].copy()
@@ -135,14 +146,17 @@ def county_settings(metric: str,
         schools["metric_of_interest"] = schools["climate.disasters"].copy().astype(int)
         color = "deep"
     
-    return [ranks, schools, color]
+    return [ranks, schools, color]              # return modified ranks and schools, as well as the chosen colorscale
 
+# function used in the description_met function in app.py
 def metric_inner_html(met_dd: str
                       ) -> str:
     """
     Returns the description text for the user-chosen metric.
     Met_dd is the metric chosen by the user in Dash.
     """
+
+    # returns a description of the selected metric
     if met_dd == "Rank":
         return("This setting displays the ranking of the Index of Deep Disadvantage, with 1 being the most disadvantaged county and 3,141 being the least disadvantaged county.<br><br>This index is made of metrics in three categories: health, poverty, and social mobility. Health includes life expectancy and infant low birth weight rate. Poverty includes percent of residents in poverty and deep povery. Social mobility includes a social mobility score calculated by Chetty and Hendren.<br><br>For more information about this metric, you can visit the project page linked at the bottom of this site.")
     elif met_dd == "Raw Disadvantage":
@@ -173,13 +187,16 @@ def metric_inner_html(met_dd: str
         return("This setting displays the county social mobility, as measured in research by Chetty and Hendren. It represents the mean household income rank for children whose parents were at the 25th percentile of the national income distribution.")
     elif met_dd == "Climate Disasters":
         return("This setting displays how often the county has been hit by climate disasters — floods, hurricanes or wildfires — deemed “major” by the federal government from 1989 through 2017, as reported by the Federal Emergency Management Agency (FEMA).")
-    
+
+#function used in the description_subset function in app.py  
 def subset_inner_html(subset_radio: str
                       ) -> str:
     """
     Returns the description text for the user-chosen school subset.
     Subset_radio is the subset chosen by the user in Dash.
     """
+
+    #returns a description of the selected metric, if there is one chosen
     if subset_radio == "HBCUs":
         return('Historically Black Colleges and Universities are defined by the Higher Education Act of 1965 as "...any historically black college or university that was established prior to 1964, whose principal mission was, and is, the education of black Americans..."<br><br>This designation is set by the Department of Education.')
     elif subset_radio == "Tribal Colleges":
