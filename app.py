@@ -4,9 +4,11 @@ from src.create_map import collect_and_clean, create_map
 from src.util import metric_inner_html, subset_inner_html
 
 # create app instance
-app = Dash(__name__)
+app = Dash()
 # add an app title
 app.title = "Diplomas and Disadvantage Map"
+# add custom favicon
+app._favicon = "assets/favico.ico"
 
 # run the collect_and_clean function in create_map.py
 counties, ranks, schools = collect_and_clean("raw_data/Index of Deep Disadvantage - Updated.xlsx", "raw_data/CSV_10312024-789.csv")
@@ -55,21 +57,36 @@ def layout() -> list:
     # create the tooltip check buttons, both are selected by default
     tooltip_checklist = dcc.Checklist(id = "tooltip_checklist",
                                       options=["County", "School"],
-                                      value=["County", "School"])
+                                      value=["County", "School"],
+                                      inline=True,
+                                      inputStyle={"margin-left": "20px",
+                                                  "margin-right": "5px"})
 
     # add all the elements to the children
-    children = [header,                             # add the header (defined above)
-                met_label,                          # add the metric dropdown label (defined above)
-                met_dd,                             # add the metric dropdown (defined above)
-                html.Div(id="met_description"),     # add a description for the metric (controlled by callback below)
-                subset_label,                       # add the subset radio buttons label (defined above)
-                subset_radio,                       # add the subset radio buttons (defined above)
-                html.Div(id="subset_description"),  # add a description for the subset (controlled by callback below)
-                dcc.Graph(id="graph"),              # add map (controlled by callback below)
-                tooltip_label,                      # add the tooltip check buttons label (defined above)
-                tooltip_checklist,                  # add the tooltip check buttons (defined above)
+    children = [html.Center(header,                              # add the header (defined above)
+                            style={"margin-top":"2%",
+                                   "margin-bottom":"2%",
+                                   "line-height": "220%"}),                             
+                met_label,                                       # add the metric dropdown label (defined above)
+                met_dd,                                          # add the metric dropdown (defined above)
+                html.Div(id="met_description",                   # add a description for the metric (controlled by callback below)
+                         style={"margin": "2%",
+                                "background-color": "#fcdcbb"}),     
+                subset_label,                                    # add the subset radio buttons label (defined above)
+                subset_radio,                                    # add the subset radio buttons (defined above)
+                html.Div(id="subset_description",                # add a description for the subset (controlled by callback below)
+                         style={"margin": "2%",
+                                "background-color": "#fcdcbb"}),  
+                html.Center(dcc.Graph(id="graph"),               # add map (controlled by callback below)
+                            style = {"margin": "1%"}), 
+                html.Center(tooltip_label),                      # add the tooltip check buttons label (defined above)
+                html.Center(tooltip_checklist),                  # add the tooltip check buttons (defined above)
                 # add link to the University of Michigan site at the bottom
-                html.Div(html.A("Visit Index of Deep Disadvantage data source.", href="https://poverty.umich.edu/projects/understanding-communities-of-deep-disadvantage/", target="_blank"))
+                html.Center(html.Div(html.A("Visit Index of Deep Disadvantage data source.",
+                                            href="https://poverty.umich.edu/projects/understanding-communities-of-deep-disadvantage/",
+                                            target="_blank",
+                                            style={"color": "#000d5e"}),
+                                    style={"margin-top": "5%"}))
                 ]
     # return the layout
     return children
