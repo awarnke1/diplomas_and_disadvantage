@@ -158,7 +158,7 @@ def metric_inner_html(met_dd: str
 
     # returns a description of the selected metric
     if met_dd == "Rank":
-        return("This setting displays the ranking of the Index of Deep Disadvantage, with 1 being the most disadvantaged county and 3,141 being the least disadvantaged county.<br><br>This index is made of metrics in three categories: health, poverty, and social mobility. Health includes life expectancy and infant low birth weight rate. Poverty includes percent of residents in poverty and deep povery. Social mobility includes a social mobility score calculated by Chetty and Hendren.<br><br>For more information about this metric, you can visit the project page linked at the bottom of this site.")
+        return("This setting displays the ranking of the Index of Deep Disadvantage, with 1 being the most disadvantaged county and 3,141 being the least disadvantaged county.<br><br>This index is made of metrics in three categories: health, poverty, and social mobility. Health includes life expectancy and infant low birth weight rate. Poverty includes percent of residents in poverty and deep povery. Social mobility includes a social mobility score calculated by Chetty, Hendren, and Katz.<br><br>For more information about this metric, you can visit the project page linked at the bottom of this site.")
     elif met_dd == "Raw Disadvantage":
         return("This setting displays the Index of Deep Disadvantage, with positive numbers indicating less disadvantaged counties and negative numbers indicating more disadvantaged counties.<br><br>This index is made of metrics in three categories: health, poverty, and social mobility. Health includes life expectancy and infant low birth weight rate. Poverty includes percent of residents in poverty and deep povery. Social mobility includes a social mobility score calculated by Chetty et al.<br><br>For more information about this metric, you can visit the project page linked at the bottom of this site.")
     elif met_dd == "Percent Below Poverty Line":
@@ -184,7 +184,7 @@ def metric_inner_html(met_dd: str
     elif met_dd == "Gini Coefficient":
         return("This setting displays the county Gini coefficient, as reported by the 2019 5-year American Community Survey.<br><br>The Gini coefficient is a measure of inequality/wealth income, with 0 representing perfect equality and 1 representing perfect inequality.")
     elif met_dd == "Socioeconomic Mobility":
-        return("This setting displays the county social mobility, as measured in research by Chetty and Hendren. It represents the mean household income rank for children whose parents were at the 25th percentile of the national income distribution.")
+        return("This setting displays the county social mobility, as measured in research by Chetty, Hendren, and Katz. It represents the mean household income rank for children whose parents were at the 25th percentile of the national income distribution.")
     elif met_dd == "Climate Disasters":
         return("This setting displays how often the county has been hit by climate disasters — floods, hurricanes or wildfires — deemed “major” by the federal government from 1989 through 2017, as reported by the Federal Emergency Management Agency (FEMA).")
 
