@@ -1,9 +1,8 @@
-# Diplomas and Disadvantage
-## Mapping U.S. Colleges on County Disadvantage Metrics
+# Diplomas and Disadvantage: Mapping U.S. Colleges on County Disadvantage Metrics
 
 ## Introduction
 
-Over 2/3 of postsecondary students attend a school within 50 miles within their home. Community advantages and colleges are both scattered unequally across the country; what might this intersection mean for students? This Dash app hopes to introduce the American public and policymakers to this question by providing a mapping tool with several subsets of colleges and over a dozen county metrics. This tool is meant for visualization purposes, not for statistical analysis; those who wish to explore the relationships they find more deeply can visit University of Michigan's Understanding Communities of Deep Disadvantage page to download the county-level disadvantage data.
+Over 2/3 of postsecondary students attend a school within 50 miles within their home. Community advantages and colleges are both scattered unequally across the country; what might their intersection mean for students? The *Diplomas and Disadvantage* Dash app hopes to introduce the American public and policymakers to this question by providing a mapping tool with several subsets of colleges and over a dozen county metrics. This tool is meant for visualization purposes, not for statistical analysis; those who wish to explore the relationships they find more deeply can visit University of Michigan's Understanding Communities of Deep Disadvantage page to download the county-level disadvantage data.
 
 More details about the origin of this project can be found in `Writeup.pdf`.
 
