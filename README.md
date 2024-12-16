@@ -32,7 +32,7 @@ On this page, you can select disadvantage metrics in the dropdown menu, choose a
 
 ## Generating the plotly map alone
 
-If you would like to generate the plotly map alone instead of the web app, you can use `create_map.py` in the `src` folder. If you run the command `python src/create_map.py`, the resulting map will be saved as `figures/basic_map.html`, and you can open the map in a web browser. You can open the current `figures/basic_map.html` file in the respository to see the output of `create_map.py`, and `figures/basic_map_snapshot.png` shows a static view of this map.
+If you would like to generate the plotly map alone instead of the web app, you can use `create_map.py` in the `src` folder. If you run the command `python src/create_map.py`, the resulting map will be saved as `figures/basic_map.html`, and you can open the map in a web browser. You can open the current `figures/basic_map.html` file in the respository to see the output of `create_map.py`, and `figures/basic_map_snapshot.png` to see a static view of this map.
 
 ![\label{fig:static plotly map}](figures/basic_map_snapshot.png)
 
