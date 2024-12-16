@@ -145,4 +145,4 @@ def description_subset(subset_radio):
 
 # when this script is run, app starts
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
