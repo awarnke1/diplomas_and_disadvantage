@@ -48,6 +48,7 @@ The `figures` folder contains the `basic_map` files as well as the screenshots u
 The `raw_data` folder contains two files:
 * `CSV_10312024-789.csv`: contains the postsecondary institution data
 * `Index of Deep Disadvantage - Updated.xlsx`: contains the disadvantage data
+
 More details about these files can be found in `Writeup.pdf`.
 
 The `src` folder contains two files:
